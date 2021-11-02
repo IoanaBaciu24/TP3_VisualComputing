@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 //        }
 //    }
 //    image_structure_t *new_img = histogram_stretching(img, min, max);
-    image_structure_t *new_img =obtain_gradient(img, 0);
+    image_structure_t *new_img =canny_detector(img);
             write_image_to_file(new_img,output_file_descriptor);
 
 
