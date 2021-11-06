@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 //        }
 //    }
 //    image_structure_t *new_img = histogram_stretching(img, min, max);
-    image_structure_t *new_img =canny_detector(img);
+    image_structure_t *new_img =treshold_magnitude(img, 70);
             write_image_to_file(new_img,output_file_descriptor);
 
 

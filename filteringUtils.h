@@ -17,3 +17,4 @@ image_structure_t *smooth_image_n_times_median_filter(image_structure_t *img, in
 image_structure_t *obtain_gradient(image_structure_t *img, int axis);
 image_structure_t *obtain_magnitude(image_structure_t *grad_x, image_structure_t *grad_y);
 image_structure_t *canny_detector(image_structure_t *img);
+image_structure_t *treshold_magnitude(image_structure_t *img, int threshold);

@@ -251,7 +251,6 @@ image_structure_t *obtain_magnitude(image_structure_t *grad_x, image_structure_t
 
 image_structure_t *non_maximum_suppression(image_structure_t *magnitude, image_structure_t *grad_x, image_structure_t *grad_y){
     image_structure_t *new_image = malloc(sizeof(image_structure_t));
-//    unsigned char *new_img_matrix = calloc(0, grad_x->rows*grad_x->cols* sizeof(unsigned char));
     unsigned char *new_img_matrix = calloc(grad_x->rows*grad_x->cols,  sizeof(unsigned char));
     int intensity1, intensity2;
     double angle;
@@ -260,7 +259,6 @@ image_structure_t *non_maximum_suppression(image_structure_t *magnitude, image_s
 
             intensity1 = 255;
             intensity2 = 255;
-            // TODO in case things fail, check the return type of grad_x/grad_y
             angle = (double)(180. * atan((double )grad_y->image_matrix[i*grad_x->cols+j]/(double )grad_x->image_matrix[i*grad_x->cols+j]))/M_PI;
             if ((0 <= angle && angle < 22.5) || (157.5 <= angle && angle <= 180))
             {
@@ -344,6 +342,37 @@ image_structure_t *hysteria(image_structure_t *non_max, int t_low, int t_high)
 
 }
 
+image_structure_t *treshold_magnitude(image_structure_t *img, int threshold)
+{
+    image_structure_t *grad_x = obtain_gradient(img, 0);
+    image_structure_t *grad_y = obtain_gradient(img, 1);
+
+    // magnitude thing
+    image_structure_t *magnitude = obtain_magnitude(grad_x, grad_y);
+
+
+    image_structure_t *new_image = malloc(sizeof(image_structure_t));
+    unsigned char *new_img_matrix = malloc(img->rows*img->cols* sizeof(unsigned char));
+
+    for(int i=0;i<img->rows;i++){
+        for(int j=0;j<img->cols;j++){
+
+
+//            new_img_matrix[i*img->cols+j] = (char)((int)sqrt(grad_x->image_matrix[i*grad_x->cols+j]*grad_x->image_matrix[i*grad_x->cols+j] + grad_y->image_matrix[i*grad_x->cols+j]*grad_y->image_matrix[i*grad_x->cols+j]));
+                if(magnitude->image_matrix[i*img->cols+j] > threshold)
+                    new_img_matrix[i*img->cols+j] = magnitude->image_matrix[i*img->cols+j];
+                else new_img_matrix[i*img->cols+j] = 0;
+        }}
+
+    new_image->maxval = 255;
+    new_image->cols = img->cols;
+    new_image->rows = img->rows;
+
+    new_image->image_matrix = new_img_matrix;
+
+    return new_image;
+}
+
 
 image_structure_t *canny_detector(image_structure_t *img)
 {
@@ -356,7 +385,7 @@ image_structure_t *canny_detector(image_structure_t *img)
 
     // non maximum thing
     image_structure_t *non_max = non_maximum_suppression(magnitude, grad_x, grad_y);
-    image_structure_t *hyst = hysteria(non_max, 15, 60);
+    image_structure_t *hyst = hysteria(non_max, 5, 40);
     return hyst;
 
 
